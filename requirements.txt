@@ -1,0 +1,27 @@
+# Telegram
+aiogram==3.13.1
+
+# БД
+sqlalchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+alembic==1.14.0
+
+# Очереди
+celery==5.4.0
+redis==5.2.1
+
+# Конфигурация
+pydantic-settings==2.6.1
+
+# Storage (S3-совместимый)
+boto3==1.35.80
+
+# LLM провайдеры
+openai==1.57.0
+anthropic==0.40.0
+
+# HTTP клиент
+httpx==0.28.1
+
+# Утилиты
+python-dotenv==1.0.1
