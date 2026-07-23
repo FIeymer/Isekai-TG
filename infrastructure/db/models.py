@@ -136,7 +136,7 @@ class StoryCharacterSnapshot(Base):
     __tablename__ = "story_character_snapshots"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    story_id = Column(UUID(as_uuid=True), ForeignKey("stories.id"), nullable=False)
+    story_id = Column(UUID(as_uuid=True), ForeignKey("stories.id"), nullable=True)
     character_id = Column(UUID(as_uuid=True), ForeignKey("characters.id"), nullable=False)
     # Копия данных персонажа на момент публикации, не ссылка
     snapshot_data = Column(JSON, nullable=False)
@@ -151,7 +151,7 @@ class Session(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    story_id = Column(UUID(as_uuid=True), ForeignKey("stories.id"), nullable=False)
+    story_id = Column(UUID(as_uuid=True), ForeignKey("stories.id"), nullable=True)
     status = Column(Enum(SessionStatus), default=SessionStatus.ACTIVE)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())

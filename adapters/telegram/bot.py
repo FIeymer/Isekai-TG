@@ -14,6 +14,8 @@ logger = logging.getLogger(__name__)
 bot = Bot(token=settings.telegram_bot_token)
 dp = Dispatcher()
 
+LLM_TIMEOUT_SECONDS = 30
+
 
 @dp.message(CommandStart())
 async def cmd_start(message: Message):
@@ -25,7 +27,14 @@ async def cmd_start(message: Message):
 
 @dp.message()
 async def on_message(message: Message):
+    # Игнорируем нетекстовые сообщения
     if not message.text:
+        await message.answer("✍️ Отправь текстовое сообщение.")
+        return
+
+    # Лимит длины сообщения
+    if len(message.text) > 1000:
+        await message.answer("✂️ Сообщение слишком длинное. Максимум 1000 символов.")
         return
 
     event = IncomingEvent(
@@ -35,8 +44,18 @@ async def on_message(message: Message):
         text=message.text,
     )
 
-    response = await handle_event(event)
-    await message.answer(response.text)
+    try:
+        response = await asyncio.wait_for(
+            handle_event(event),
+            timeout=LLM_TIMEOUT_SECONDS,
+        )
+        await message.answer(response.text)
+    except asyncio.TimeoutError:
+        logger.error(f"LLM timeout for user {message.from_user.id}")
+        await message.answer("⏱️ Ответ занял слишком долго. Попробуй ещё раз.")
+    except Exception as e:
+        logger.error(f"Unexpected error for user {message.from_user.id}: {e}")
+        await message.answer("⚠️ Что-то пошло не так. Попробуй ещё раз.")
 
 
 async def main():
