@@ -5,6 +5,10 @@ celery_app = Celery(
     "storyweave",
     broker=settings.redis_url,
     backend=settings.redis_url,
+    include=[
+        "workers.image.image_tasks",
+        "workers.text.tasks",
+    ],
 )
 
 celery_app.conf.update(
@@ -13,8 +17,9 @@ celery_app.conf.update(
     accept_content=["json"],
     timezone="UTC",
     enable_utc=True,
+    broker_connection_retry_on_startup=True,
     task_routes={
         "workers.text.tasks.*": {"queue": "text"},
-        "workers.image.tasks.*": {"queue": "media"},
+        "workers.image.image_tasks.*": {"queue": "media"},
     },
 )

@@ -19,7 +19,6 @@ DEFAULT_SYSTEM_PROMPT = """Ты — ведущий интерактивной р
 
 # Локальный кэш истории: session_id -> list of messages
 _history: dict[str, list[dict]] = {}
-
 LOCK_TTL = 60  # секунд
 
 
@@ -56,9 +55,8 @@ async def generate_text(
             max_tokens=500,
         )
 
-        reply = response.choices[0].message.content
+        reply = response.choices[0].message.content or "⚠️ Пустой ответ от модели. Попробуй ещё раз."
         _history[session_id].append({"role": "assistant", "content": reply})
-
         return reply
 
     except Exception as e:
