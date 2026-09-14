@@ -17,8 +17,9 @@ DEFAULT_SYSTEM_PROMPT = """Ты — ведущий интерактивной р
 Когда игрок выбирает вариант (1, 2, 3) — продолжай именно ту ветку которую он выбрал.
 Отвечай на том же языке что и игрок. Предлагай 2-3 варианта действий в конце каждого хода."""
 
+# Локальный кэш истории: session_id -> list of messages
 _history: dict[str, list[dict]] = {}
-LOCK_TTL = 60
+LOCK_TTL = 60  # секунд
 
 
 async def _acquire_lock(session_id: str) -> bool:
